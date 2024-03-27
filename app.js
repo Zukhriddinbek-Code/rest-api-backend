@@ -19,4 +19,6 @@ app.use((req, res, next) => {
 
 app.use("/feed", feedRoutes);
 
-app.listen(8080);
+app.listen(8080, () => {
+  console.log("Server is running on 8080");
+});
