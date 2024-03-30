@@ -26,6 +26,16 @@ app.use((req, res, next) => {
 
 app.use("/feed", feedRoutes);
 
+//error handling middleware
+app.use((error, req, res, next) => {
+  console.log(error);
+  const status = error.statusCode || 500;
+  //by default error constructor object will have
+  const message = error.message;
+
+  res.status(status).json({ message: message });
+});
+
 mongoose
   .connect(MONGODB_URL)
   .then((result) => {
