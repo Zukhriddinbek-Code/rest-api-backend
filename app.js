@@ -1,12 +1,15 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const path = require("path");
 
 const feedRoutes = require("./routes/feed");
 
 const app = express();
 
 app.use(bodyParser.json()); //application/json
+//serve images statically
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 const MONGODB_URL =
   "mongodb+srv://zuhriddin_ganiev:8aEZ5BqVm5OVUA4U@cluster-zuhriddin.65mbqpl.mongodb.net/messages?retryWrites=true&w=majority";
