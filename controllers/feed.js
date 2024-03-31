@@ -2,7 +2,7 @@ const { validationResult } = require("express-validator");
 
 const Post = require("../models/post");
 
-exports.getPosts = (req, res) => {
+exports.getPosts = (req, res, next) => {
   Post.find()
     .then((posts) => {
       if (!posts) {
@@ -22,13 +22,19 @@ exports.getPosts = (req, res) => {
     });
 };
 
-exports.createPost = (req, res) => {
+exports.createPost = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error("Validation failed!");
     error.statusCode = 422;
     throw error;
   }
+  if (!req.file) {
+    const error = new Error("No image provided!");
+    error.statusCode = 422;
+    throw error;
+  }
+  const imageUrl = req.file.path;
   const title = req.body.title;
   const content = req.body.content;
 
@@ -36,7 +42,7 @@ exports.createPost = (req, res) => {
   const post = new Post({
     title: title,
     content: content,
-    imageUrl: "images/duck.png",
+    imageUrl: imageUrl,
     creator: {
       name: "Zuhriddin",
     },
@@ -60,7 +66,7 @@ exports.createPost = (req, res) => {
     });
 };
 
-exports.getPost = (req, res) => {
+exports.getPost = (req, res, next) => {
   const postId = req.params.postId;
 
   Post.findById(postId)
