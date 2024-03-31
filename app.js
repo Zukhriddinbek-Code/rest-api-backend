@@ -2,12 +2,42 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const path = require("path");
+//file uploads handler
+const multer = require("multer");
 
 const feedRoutes = require("./routes/feed");
 
 const app = express();
 
+//control where the image uploads are stored
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    //null = errors no errors
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + "-" + file.originalname);
+  },
+});
+
+//file filtering to receive particular types of file e.g. .png, .jpeg
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "images/png" ||
+    file.mimetype === "images/jpg" ||
+    file.mimetype === "images/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 app.use(bodyParser.json()); //application/json
+//register multer
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
 //serve images statically
 app.use("/images", express.static(path.join(__dirname, "images")));
 
