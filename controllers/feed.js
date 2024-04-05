@@ -14,7 +14,10 @@ exports.getPosts = (req, res, next) => {
     .countDocuments()
     .then((count) => {
       totalItems = count;
-      return Post.find();
+      //skip the given amount from db and return the other posts
+      return Post.find()
+        .skip((currentPage - 1) * perPage)
+        .limit(perPage);
     })
     .then((posts) => {
       if (!posts) {
@@ -24,7 +27,11 @@ exports.getPosts = (req, res, next) => {
       }
       res
         .status(200)
-        .json({ message: "Posts fetched successfully", posts: posts });
+        .json({
+          message: "Posts fetched successfully",
+          posts: posts,
+          totalItems: totalItems,
+        });
     })
     .catch((err) => {
       if (!err.statusCode) {
