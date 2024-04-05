@@ -145,10 +145,22 @@ exports.deletePost = (req, res, next) => {
 
   Post.findById(postId)
     .then((post) => {
+      //checking whether post exists in db
+      if (!post) {
+        const error = new Error("Could not find post!");
+        error.statusCode = 404;
+        throw error;
+      }
+
       //check logged in user
 
       //deleting an image
       clearImage(post.imageUrl);
+      return Post.findByIdAndDelete(postId);
+    })
+    .then((response) => {
+      console.log(response);
+      res.status(200).json({ message: "Post deleted successfully!" });
     })
     .catch((err) => {
       if (!err.statusCode) {
