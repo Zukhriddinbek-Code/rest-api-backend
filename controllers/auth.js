@@ -38,3 +38,35 @@ exports.signup = (req, res, next) => {
       }
     });
 };
+
+exports.login = (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  let loadedUser;
+
+  User.findOne({ email: email })
+    .then((userDoc) => {
+      if (!userDoc) {
+        const error = new Error(
+          "Failed to find a user with this email address!"
+        );
+        error.statusCode = 401;
+        throw error;
+      }
+      loadedUser = userDoc;
+      return bcrypt.compare(password, userDoc.password);
+    })
+    .then((isEqual) => {
+      if (!isEqual) {
+        const error = new Error("Wrong password!");
+        error.statusCode = 401;
+        throw error;
+      }
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+        next(err);
+      }
+    });
+};
