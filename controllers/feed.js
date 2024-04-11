@@ -141,6 +141,11 @@ exports.updatePost = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
+      if (post.creator.toString() === req.userId) {
+        const error = new Error("You are not allowed to edit this post!");
+        error.statusCode = 403;
+        throw error;
+      }
 
       //if new image uploaded, then we delete old image from computer storage
       if (imageUrl !== post.imageUrl) {
