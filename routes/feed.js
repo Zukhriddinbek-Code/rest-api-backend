@@ -33,4 +33,6 @@ router.put(
 
 router.delete("/post/:postId", isAuth, feedController.deletePost);
 
+router.get("/user-status", isAuth, feedController.getStatus);
+
 module.exports = router;
