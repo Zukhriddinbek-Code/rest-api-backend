@@ -15,6 +15,7 @@ exports.getPosts = async (req, res, next) => {
 
     //skip the given amount from db and return the other posts
     const posts = await Post.find()
+      .populate("creator")
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
     if (!posts) {
