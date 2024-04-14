@@ -17,12 +17,11 @@ exports.getPosts = async (req, res, next) => {
     const posts = await Post.find()
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
-
-    // if (!posts) {
-    //   const error = new Error("No posts found!");
-    //   error.statusCode = 404;
-    //   throw error;
-    // }
+    if (!posts) {
+      const error = new Error("No posts found!");
+      error.statusCode = 404;
+      throw error;
+    }
     res.status(200).json({
       message: "Posts fetched successfully",
       posts: posts,
@@ -81,30 +80,6 @@ exports.createPost = async (req, res, next) => {
       next(err);
     }
   }
-
-  // post
-  //   .save()
-  //   .then((result) => {
-  //     return User.findById(req.userId);
-  //   })
-  //   .then((user) => {
-  //     creator = user;
-  //     user.posts.push(post);
-  //     return user.save();
-  //   })
-  //   .then((result) => {
-  //     res.status(201).json({
-  //       message: "Post was created successfully!",
-  //       post: post,
-  //       creator: { _id: creator._id, name: creator.name },
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     if (!err.statusCode) {
-  //       err.statusCode = 500;
-  //       next(err);
-  //     }
-  //   });
 };
 
 exports.getPost = async (req, res, next) => {
@@ -112,11 +87,11 @@ exports.getPost = async (req, res, next) => {
 
   try {
     const post = await Post.findById(postId);
-    // if (!post) {
-    //   const error = new Error("Could not find post!");
-    //   error.statusCode = 404;
-    //   throw error;
-    // }
+    if (!post) {
+      const error = new Error("Could not find post!");
+      error.statusCode = 404;
+      throw error;
+    }
 
     res.status(200).json({ message: "Post fetched successfully", post: post });
   } catch (err) {
@@ -125,24 +100,6 @@ exports.getPost = async (req, res, next) => {
       next(err);
     }
   }
-
-  // Post.findById(postId)
-  //   .then((post) => {
-  //     if (!post) {
-  //       const error = new Error("Could not find post!");
-  //       error.statusCode = 404;
-  //       throw error;
-  //     }
-  //     res
-  //       .status(200)
-  //       .json({ message: "Post fetched successfully", post: post });
-  //   })
-  //   .catch((err) => {
-  //     if (!err.statusCode) {
-  //       err.statusCode = 500;
-  //       next(err);
-  //     }
-  //   });
 };
 
 exports.updatePost = async (req, res, next) => {
@@ -168,11 +125,11 @@ exports.updatePost = async (req, res, next) => {
 
   try {
     const post = await Post.findById(postId);
-    // if (!post) {
-    //   const error = new Error("Could not find post!");
-    //   error.statusCode = 404;
-    //   throw error;
-    // }
+    if (!post) {
+      const error = new Error("Could not find post!");
+      error.statusCode = 404;
+      throw error;
+    }
 
     if (post.creator.toString() !== req.userId) {
       const error = new Error("You are not allowed to edit this post!");
@@ -191,46 +148,13 @@ exports.updatePost = async (req, res, next) => {
 
     const updateResult = await post.save();
 
-    res.status(200).json({ message: "Post updated!", post: result });
+    res.status(200).json({ message: "Post updated!", post: updateResult });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
       next(err);
     }
   }
-
-  // Post.findById(postId)
-  //   .then((post) => {
-  //     if (!post) {
-  //       const error = new Error("Could not find post!");
-  //       error.statusCode = 404;
-  //       throw error;
-  //     }
-  //     if (post.creator.toString() !== req.userId) {
-  //       const error = new Error("You are not allowed to edit this post!");
-  //       error.statusCode = 403;
-  //       throw error;
-  //     }
-
-  //     //if new image uploaded, then we delete old image from computer storage
-  //     if (imageUrl !== post.imageUrl) {
-  //       clearImage(post.imageUrl);
-  //     }
-
-  //     post.title = title;
-  //     post.content = content;
-  //     post.imageUrl = imageUrl;
-  //     return post.save();
-  //   })
-  //   .then((result) => {
-  //     return res.status(200).json({ message: "Post updated!", post: result });
-  //   })
-  //   .catch((err) => {
-  //     if (!err.statusCode) {
-  //       err.statusCode = 500;
-  //       next(err);
-  //     }
-  //   });
 };
 
 exports.deletePost = async (req, res, next) => {
@@ -239,11 +163,11 @@ exports.deletePost = async (req, res, next) => {
   try {
     const post = await Post.findById(postId);
     // checking whether post exists in db
-    // if (!post) {
-    //   const error = new Error("Could not find post!");
-    //   error.statusCode = 404;
-    //   throw error;
-    // }
+    if (!post) {
+      const error = new Error("Could not find post!");
+      error.statusCode = 404;
+      throw error;
+    }
 
     //check logged in user
     if (post.creator.toString() !== req.userId) {
@@ -268,43 +192,6 @@ exports.deletePost = async (req, res, next) => {
       next(err);
     }
   }
-
-  // Post.findById(postId)
-  //   .then((post) => {
-  //     //checking whether post exists in db
-  //     if (!post) {
-  //       const error = new Error("Could not find post!");
-  //       error.statusCode = 404;
-  //       throw error;
-  //     }
-
-  //     //check logged in user
-  //     if (post.creator.toString() !== req.userId) {
-  //       const error = new Error("You are not allowed to edit this post!");
-  //       error.statusCode = 403;
-  //       throw error;
-  //     }
-
-  //     //deleting an image
-  //     clearImage(post.imageUrl);
-  //     return Post.findByIdAndDelete(postId);
-  //   })
-  //   .then((response) => {
-  //     return User.findById(req.userId);
-  //   })
-  //   .then((user) => {
-  //     user.posts.pull(postId);
-  //     return user.save();
-  //   })
-  //   .then((result) => {
-  //     res.status(200).json({ message: "Post deleted successfully!" });
-  //   })
-  //   .catch((err) => {
-  //     if (!err.statusCode) {
-  //       err.statusCode = 500;
-  //       next(err);
-  //     }
-  //   });
 };
 
 //helper fn to delete an image
