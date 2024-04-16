@@ -72,8 +72,14 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(MONGODB_URL)
   .then((result) => {
-    app.listen(8080, () => {
+    const server = app.listen(8080, () => {
       console.log("Server is running on 8080");
+    });
+    const io = require("socket.io")(server);
+
+    //fn triggers on every client connects to the server
+    io.on("connection", (socket) => {
+      console.log("Client connected!");
     });
   })
   .catch((err) => console.log(err));
