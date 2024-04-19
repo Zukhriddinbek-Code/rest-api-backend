@@ -22,14 +22,14 @@ exports.signup = async (req, res, next) => {
     const user = new User({
       email: email,
       name: name,
-      password: hashPassword,
+      password: hashedPassword,
     });
 
     const saveResult = await user.save();
 
     res
       .status(201)
-      .json({ message: "User created successfully", userId: response._id });
+      .json({ message: "User created successfully", userId: saveResult._id });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
